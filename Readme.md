@@ -1,12 +1,5 @@
 ![Preview of demo website](mockup.jpg)
 
-# Share Now car locations
-Here is [demo page](https://share-now-api.herokuapp.com) that shows the locations of all Share Now cars. Only cars in Hamburg are shown right now.
-
-Green markers are cars that became available.
-
-Grey markers are cars that became unavailable.
-
 ## Usage
 ```
 npm install
@@ -14,11 +7,28 @@ node server.js
 ```
 Go to [http://localhost:8080](http://localhost:8080).
 
+Green markers are cars that became available.
 
-## MQTT
-The data is serverd by a MQTT broker. For Europe the endpoint is `mqtts://driver.eu.share-now.com:443`. The clientId is a random UUID prefixed with `a:` for anonymous connections. No username and password are required.
+Grey markers are cars that became unavailable.
 
-You can subscribe to multiple topics. The schema is `C2G/S2C/<locationId>/<topic>.GZ` where `topic` is either `VEHICLELIST` or `VEHICLELISTDELTA`.
+## How it works
+
+### 1. Fetch city configuration
+The app first fetches the list of available cities and their MQTT broker URLs from the Free2move REST API:
+
+```
+GET https://app.free2move.com/api/rental/appdata/v7/external/configurations
+```
+
+The response contains a `locations` array, each entry with a `locationId`, `locationName`, and `vserverMqttUri`.
+
+### 2. Connect to MQTT
+Connect to the MQTT broker URL from the city configuration (currently `mqtts://driver.prod.rental.ridedev.io:443` for all cities). No username or password is required for anonymous access. The clientId is a random UUID prefixed by `a:`.
+
+### 3. Subscribe to topics
+Subscribe to vehicle data topics. The schema is `C2G/S2C/<locationId>/<topic>.GZ` where `topic` is either `VEHICLELIST` or `VEHICLELISTDELTA`.
+
+## Locations
 
 Possible `locationId` values are:
 
@@ -33,18 +43,23 @@ Possible `locationId` values are:
     - Milan - `20`
     - Rome - `31`
     - Turin - `44`
-- Other countries
-    - Copenhagen - `52`
+- France
     - Paris - `48`
+- Netherlands
     - Amsterdam - `5`
+- Austria
     - Vienna - `7`
+- Spain
     - Madrid - `36`
-    - Budapest - `55`
+- USA
+    - Washington DC - `57`
 
-The data received is json compressed with gzip.
+## MQTT Topics
+
+All data received is JSON compressed with gzip.
 
 ### VEHICLELIST
-Subscriptions to this topic will give you a list with all cars for the given location. A message is sent each time there is an update, so you should unsubscribe as soon as you get the first message.
+Subscriptions to this topic give you a list of all available cars for the given location. A message is sent each time there is an update, so you should unsubscribe as soon as you get the first message.
 
 <details>
     <summary>Example</summary>
@@ -122,4 +137,4 @@ This topic receives messages whenever a car becomes available or unavailable.
 </details>
 
 ### Code
-All Share Now api related code is in [sharenow.js](sharenow.js). Rest of the files are for the demo webpage.
+All Free2move API related code is in [free2move.js](free2move.js). The rest of the files are for the demo webpage.

@@ -1,11 +1,11 @@
 {
-  "name": "share-now-api",
+  "name": "free2move-api",
   "version": "1.0.0",
-  "description": "Demo project to show how to use the Share Now api anonymously.",
+  "description": "Demo project to show how to use the Free2move (formerly Share Now) api anonymously.",
   "main": "server.js",
   "repository": {
     "type": "git",
-	"url": "https://github.com/T3rm1/share-now-api.git"
+	"url": "https://github.com/T3rm1/free2move-api.git"
   },
   "dependencies": {
     "express": "^4.17.1",
@@ -14,14 +14,11 @@
     "ws": "^7.3.0"
   },
   "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [
     "mqtt",
-    "sharenow"
+    "free2move"
   ],
   "author": "T3rm1",
   "license": "ISC",
-  "homepage": "https://github.com/T3rm1/share-now-api"
+  "homepage": "https://github.com/T3rm1/free2move-api"
 }
